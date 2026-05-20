@@ -1,0 +1,15 @@
+<div class="card">
+    <h4 class="card-header">Verify Email</h4>
+    <div class="card-body">
+        <div *ngIf="verifying">
+            <span class="spinner-border spinner-border-sm"></span>
+            Verifying...
+        </div>
+        <div *ngIf="!verifying">
+            <p *ngIf="verifyFailed" class="text-danger">
+                Verification failed, you can also verify your account using the
+                <a routerLink="/account/forgot-password">forgot password</a> page.
+            </p>
+        </div>
+    </div>
+</div>
