@@ -88,7 +88,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             saveAccounts();
             setTimeout(() => {
                 const verifyUrl = `${location.origin}/account/verify-email?token=${account.verificationToken}`;
-                alertSvc.info(`
+                alertSvc.success(`
                     <h4>Verification Email</h4>
                     <p>Thanks for registering!</p>
                     <p>Please click the below link to verify your email address:</p>
@@ -116,7 +116,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             saveAccounts();
             setTimeout(() => {
                 const resetUrl = `${location.origin}/account/reset-password?token=${account.resetToken}`;
-                alertSvc.info(`
+                alertSvc.success(`
                     <h4>Reset Password Email</h4>
                     <p>Please click the below link to reset your password:</p>
                     <p><a href="${resetUrl}">${resetUrl}</a></p>
