@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
@@ -27,7 +27,9 @@ export class ResetPasswordComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private cdr: ChangeDetectorRef,
+        private ngZone: NgZone
     ) {}
 
     ngOnInit() {
@@ -40,12 +42,26 @@ export class ResetPasswordComponent implements OnInit {
             validators: [MustMatch('password', 'confirmPassword')]
         });
 
+        if (!this.token) {
+            this.tokenStatus = TokenStatus.Invalid;
+            return;
+        }
+
         this.accountService.validateResetToken(this.token)
             .pipe(first())
             .subscribe({
-                next: () => { this.tokenStatus = TokenStatus.Valid; },
-                error: () => { this.tokenStatus = TokenStatus.Invalid; }
+                next: () => this.setStatus(TokenStatus.Valid),
+                error: () => this.setStatus(TokenStatus.Invalid)
             });
+    }
+
+    // Forces Angular to detect the state change, no matter what zone/CD setup is in play.
+    private setStatus(status: TokenStatus) {
+        this.ngZone.run(() => {
+            this.tokenStatus = status;
+            this.cdr.detectChanges();
+            setTimeout(() => this.cdr.detectChanges(), 0);
+        });
     }
 
     get f() { return this.form.controls; }
@@ -65,6 +81,7 @@ export class ResetPasswordComponent implements OnInit {
                 error: err => {
                     this.error = err;
                     this.loading = false;
+                    this.cdr.detectChanges();
                 }
             });
     }
