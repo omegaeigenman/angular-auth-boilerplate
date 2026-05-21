@@ -70,8 +70,9 @@ export class AccountService {
     }
 
     getAll() {
-        return this.http.get<Account[]>(baseUrl);
+        return this.http.get<Account[]>(`${baseUrl}?_=${Date.now()}`);
     }
+
 
     getById(id: string) {
         return this.http.get<Account>(`${baseUrl}/${id}`);
