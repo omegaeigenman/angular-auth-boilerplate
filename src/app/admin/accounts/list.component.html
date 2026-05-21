@@ -1,0 +1,39 @@
+<h2>Accounts</h2>
+<a routerLink="add" class="btn btn-sm btn-success mb-2">Add Account</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Verified</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let account of accounts">
+            <td>{{account.id}}</td>
+            <td>{{account.title}} {{account.firstName}} {{account.lastName}}</td>
+            <td>{{account.email}}</td>
+            <td>{{account.role}}</td>
+            <td>
+                <span *ngIf="account.isVerified" class="badge bg-success">Yes</span>
+                <span *ngIf="!account.isVerified" class="badge bg-warning text-dark">No</span>
+            </td>
+            <td class="text-end">
+                <a routerLink="edit/{{account.id}}" class="btn btn-sm btn-primary me-1">Edit</a>
+                <button (click)="deleteAccount(account)" class="btn btn-sm btn-danger" [disabled]="account.isDeleting">
+                    <span *ngIf="account.isDeleting" class="spinner-border spinner-border-sm"></span>
+                    <span *ngIf="!account.isDeleting">Delete</span>
+                </button>
+            </td>
+        </tr>
+        <tr *ngIf="!accounts">
+            <td colspan="6" class="text-center"><span class="spinner-border spinner-border-sm"></span> Loading...</td>
+        </tr>
+        <tr *ngIf="accounts?.length === 0">
+            <td colspan="6" class="text-center">No accounts found</td>
+        </tr>
+    </tbody>
+</table>

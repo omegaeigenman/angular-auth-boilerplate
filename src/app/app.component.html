@@ -1,0 +1,26 @@
+<!-- Main nav (only shown when logged in) -->
+<nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="account">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink="/">Angular 21 Auth</a>
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a>
+            <a class="nav-item nav-link" routerLink="/profile" routerLinkActive="active">Profile</a>
+            <a class="nav-item nav-link" routerLink="/admin" routerLinkActive="active" *ngIf="account.role === Role.Admin">Admin</a>
+            <a class="nav-item nav-link" (click)="logout()">Logout</a>
+        </div>
+        <span class="navbar-text ms-auto">
+            {{account.firstName}} {{account.lastName}} ({{account.role}})
+        </span>
+    </div>
+</nav>
+
+<!-- Sub nav outlet (for admin subnav) -->
+<router-outlet name="subnav"></router-outlet>
+
+<!-- Global alert component -->
+<div class="container pt-3">
+    <alert></alert>
+</div>
+
+<!-- Main content -->
+<router-outlet></router-outlet>

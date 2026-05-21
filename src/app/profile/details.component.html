@@ -1,0 +1,20 @@
+<div class="card mb-3">
+    <h5 class="card-header">My Profile</h5>
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-sm-3"><strong>Name</strong></div>
+            <div class="col-sm-9">{{account?.title}} {{account?.firstName}} {{account?.lastName}}</div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-3"><strong>Email</strong></div>
+            <div class="col-sm-9">{{account?.email}}</div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-3"><strong>Role</strong></div>
+            <div class="col-sm-9">{{account?.role}}</div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <a routerLink="update" class="btn btn-primary btn-sm">Update Profile</a>
+    </div>
+</div>
