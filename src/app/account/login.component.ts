@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
+import { finalize, first } from 'rxjs/operators';
 
 import { AccountService, AlertService } from '@app/_services';
 
@@ -17,7 +17,8 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private cdr: ChangeDetectorRef
     ) {}
 
     ngOnInit() {
@@ -36,15 +37,21 @@ export class LoginComponent implements OnInit {
         this.error = '';
         this.loading = true;
         this.accountService.login(this.f['email'].value, this.f['password'].value)
-            .pipe(first())
+            .pipe(
+                first(),
+                finalize(() => {
+                    this.loading = false;
+                    this.cdr.detectChanges();
+                })
+            )
             .subscribe({
                 next: () => {
                     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
                     this.router.navigateByUrl(returnUrl);
                 },
                 error: err => {
-                    this.error = err;
-                    this.loading = false;
+                    this.error = err || 'Login failed';
+                    this.cdr.detectChanges();
                 }
             });
     }
