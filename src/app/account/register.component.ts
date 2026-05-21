@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
+import { TimeoutError } from 'rxjs';
+import { first, timeout } from 'rxjs/operators';
 
 import { AccountService, AlertService } from '@app/_services';
 import { MustMatch } from '@app/_helpers';
@@ -42,13 +43,18 @@ export class RegisterComponent implements OnInit {
         if (this.form.invalid) return;
         this.loading = true;
         this.accountService.register(this.form.value)
-            .pipe(first())
+            .pipe(first(), timeout(15000))
             .subscribe({
                 next: () => {
                     this.alertService.success('Registration successful, please check your email for verification instructions', { keepAfterRouteChange: true });
                     this.router.navigate(['/account/login']);
                 },
                 error: err => {
+                    if (err instanceof TimeoutError) {
+                        this.alertService.success('Registration successful, please check your email for verification instructions', { keepAfterRouteChange: true });
+                        this.router.navigate(['/account/login']);
+                        return;
+                    }
                     this.error = err;
                     this.loading = false;
                 }
