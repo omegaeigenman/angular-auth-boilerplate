@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TimeoutError } from 'rxjs';
 import { first, timeout } from 'rxjs/operators';
 
 import { AccountService, AlertService } from '@app/_services';
@@ -29,24 +28,17 @@ export class ForgotPasswordComponent implements OnInit {
     onSubmit() {
         this.submitted = true;
         this.alertService.clear();
+        this.error = '';
         if (this.form.invalid) return;
-        this.loading = true;
+
+        this.alertService.info('Please check your email for password reset instructions');
+        this.loading = false;
+
         this.accountService.forgotPassword(this.f['email'].value)
-            .pipe(first(), timeout(15000))
+            .pipe(first(), timeout(5000))
             .subscribe({
-                next: () => {
-                    this.alertService.success('Please check your email for password reset instructions');
-                    this.loading = false;
-                },
-                error: err => {
-                    if (err instanceof TimeoutError) {
-                        this.alertService.success('Please check your email for password reset instructions');
-                        this.loading = false;
-                        return;
-                    }
-                    this.error = err;
-                    this.loading = false;
-                }
+                next: () => {},
+                error: () => {}
             });
     }
 }
